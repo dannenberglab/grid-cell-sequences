@@ -7,6 +7,13 @@ function [grid_maps] = get_gridMaps(nmbr_neurons)
 % that participate in the grid map. Output is a cell that contains all
 % possible grid maps. These possibilities include reflections or 90 degree rotations and
 % reflections of each other.
+% The maximal number of neurons for which this function works is 14.
+
+% Validate input
+if nmbr_neurons > 14
+    warning('Please chose a number of neurons that is smaller than 15.')
+    return
+end
 
 grid_maps = cell(1,1); % initiate cell with unknown number of elements
 
