@@ -1,14 +1,12 @@
-%%%% Work in progress %%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% currently works if nmbr_neurons is prime, and for 8, 9, and 10 neurons
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [grid_maps] = get_gridMaps(nmbr_neurons)
 
-% this function computes all possible grid maps and their smallest angles
-% to the walls of a rectangular environment based on the number of neurons
-% (nmbr_neurons) that are available to create the grid map.
+% This function computes all possible arrangements of cells in a "grid map"
+% that are consistent with a trajectory code in 2D space by cell sequences
+% given the number of neurons (nmbr_neurons) that are available to create
+% the grid map in a rectangular environment. Input is the number of neurons
+% that participate in the grid map. Output is a cell that contains all
+% possible grid maps. These possibilities include reflections or 90 degree rotations and
+% reflections of each other.
 
 grid_maps = cell(1,1); % initiate cell with unknown number of elements
 
@@ -21,8 +19,14 @@ for k = 1:numel(divisors)
         sequence{rows} = (rows-1)*divisors(k)+1:divisors(k)*rows;
     end
     if rows == 1
-        % try translation (from 4 to nmbr_neurons-1)
+        % try translation (from 4 to nmbr_neurons-1); NOTE: the numbers
+        % here indicate the INDEX of the cell in the translated repeat that
+        % lies to the upper right of the first index of the repeat in the original row.
         for t = 4:nmbr_neurons-1
+            if (t-1)*2 == nmbr_neurons || (t-1)*2 == nmbr_neurons + 1 || (t-1)*2 == nmbr_neurons + 2 % in these cases, the third row is translated in a way so that it creates an ambiguous code
+                translation{t-3} = [];
+                continue
+            end
             translation{t-3} = [sequence{1}(t:end) sequence{1}(1:t-1)];
             % now continue in the same way but introduce a shift every
             % second row to plot the grid map aligned to a vertical wall
@@ -96,7 +100,7 @@ for k = 1:numel(divisors)
             more_translations{5} = translation{t};
             for grid_rows = 6:20
                 more_translations{grid_rows} = [temp(t:end) temp(1:t-1)];
-                temp = more_translations{grid_rows-1};
+                temp = more_translations{grid_rows-3};
             end
             grid_maps{1,t} = repmat([sequence{1}; sequence{2}; sequence{3}; sequence{4}; translation{t}; more_translations{6};more_translations{7};more_translations{8};more_translations{9};more_translations{10};more_translations{11};more_translations{12};more_translations{13};more_translations{14}; more_translations{15}; more_translations{16}; more_translations{17}; more_translations{18}; more_translations{19}; more_translations{20}],1,1);
             % plot grid maps
