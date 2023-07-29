@@ -176,5 +176,13 @@ end
         end
         
     end
-
+    
+    function y = iseven(x)
+        if round(x/2)*2 == x
+            y = true;
+        else
+            y = false;
+        end
+    end
+    
 end
